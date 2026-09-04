@@ -1,1 +1,24 @@
-const nav=document.getElementById('nav');const menu=document.querySelector('.menu');const links=document.querySelector('.desktop-nav');menu?.addEventListener('click',()=>{if(!links)return;links.style.display=links.style.display==='flex'?'none':'flex';links.style.position='absolute';links.style.top='68px';links.style.left='0';links.style.right='0';links.style.background='rgba(6,9,45,.98)';links.style.padding='20px';links.style.flexDirection='column'});window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>20));document.getElementById('year').textContent=new Date().getFullYear();
+const nav = document.getElementById('nav');
+const menu = document.querySelector('.menu');
+const links = document.querySelector('.desktop-nav');
+
+const setMenuState = (isOpen) => {
+  links?.classList.toggle('is-open', isOpen);
+  menu?.setAttribute('aria-expanded', String(isOpen));
+  menu?.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+};
+
+menu?.addEventListener('click', () => {
+  setMenuState(!links?.classList.contains('is-open'));
+});
+
+links?.querySelectorAll('a').forEach((link) => {
+  link.addEventListener('click', () => setMenuState(false));
+});
+
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 680) setMenuState(false);
+});
+
+window.addEventListener('scroll', () => nav?.classList.toggle('scrolled', window.scrollY > 20));
+document.getElementById('year').textContent = new Date().getFullYear();
