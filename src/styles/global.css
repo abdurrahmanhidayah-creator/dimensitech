@@ -1,0 +1,254 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Design tokens — sampled from the Dimensi landing artwork.
+   Deep indigo ground, magenta accent, electric blue support.
+--------------------------------------------------------------------------- */
+@theme {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-navy-950: #05062a;
+  --color-navy-900: #080b38;
+  --color-navy-800: #0d1049;
+  --color-navy-700: #171a63;
+  --color-navy-600: #232a86;
+
+  --color-violet-700: #3d1a7a;
+  --color-violet-600: #5a1e9c;
+  --color-violet-500: #771fc8;
+  --color-violet-400: #9b52e0;
+
+  --color-magenta-600: #d8135a;
+  --color-magenta-500: #f5216a;
+  --color-magenta-400: #ff4f8b;
+
+  --color-azure-600: #1b56d6;
+  --color-azure-500: #2469e8;
+  --color-azure-400: #35b9ff;
+
+  --color-ink-900: #0f1338;
+  --color-ink-600: #454c78;
+  --color-ink-400: #737aa3;
+  --color-paper-50: #ffffff;
+  --color-paper-100: #f6f8fd;
+  --color-paper-200: #eaeefa;
+
+  --shadow-card: 0 18px 45px -20px rgb(15 19 56 / 0.28);
+  --shadow-glow: 0 18px 40px -12px rgb(245 33 106 / 0.45);
+
+  --radius-card: 0.875rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-paper-50);
+    color: var(--color-ink-900);
+    font-family: var(--font-sans);
+    font-feature-settings: 'ss01';
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--color-magenta-500);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-magenta-400);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  h1, h2, h3, h4 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+}
+
+@layer components {
+  /* Horizontal rhythm shared by every section. */
+  .shell {
+    width: min(1200px, 100% - 2.5rem);
+    margin-inline: auto;
+  }
+  @media (min-width: 1024px) {
+    .shell { width: min(1200px, 100% - 5rem); }
+  }
+
+  .eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--color-magenta-500);
+  }
+  .eyebrow-light { color: #cdd2f5; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    border-radius: 0.5rem;
+    padding: 0.9rem 1.5rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: #fff;
+    background: linear-gradient(100deg, var(--color-magenta-600), var(--color-magenta-500) 55%, #ff3d78);
+    box-shadow: var(--shadow-glow);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  }
+  .btn:hover { transform: translateY(-2px); filter: saturate(1.08); }
+  .btn:active { transform: translateY(0); }
+
+  .btn-ghost {
+    background: transparent;
+    box-shadow: none;
+    border: 1px solid rgb(255 255 255 / 0.45);
+  }
+  .btn-ghost:hover { background: rgb(255 255 255 / 0.08); border-color: #fff; }
+
+  .btn-dark {
+    background: linear-gradient(100deg, var(--color-navy-800), var(--color-navy-700));
+    box-shadow: 0 16px 34px -16px rgb(13 16 73 / 0.7);
+  }
+
+  .btn-sm { padding: 0.65rem 1.15rem; font-size: 0.75rem; }
+
+  /* Arrow that nudges forward on hover of the parent link/button. */
+  .btn .arrow, .link-arrow .arrow { transition: transform 0.25s ease; }
+  .btn:hover .arrow, .link-arrow:hover .arrow { transform: translateX(4px); }
+
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--color-magenta-500);
+  }
+
+  .card {
+    background: var(--color-paper-50);
+    border: 1px solid var(--color-paper-200);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--color-magenta-500) 35%, transparent);
+    box-shadow: 0 26px 55px -24px rgb(15 19 56 / 0.4);
+  }
+
+  .card-dark {
+    background: linear-gradient(160deg, rgb(23 26 99 / 0.55), rgb(8 11 56 / 0.7));
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: var(--radius-card);
+    transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+  .card-dark:hover {
+    transform: translateY(-4px);
+    border-color: rgb(255 79 139 / 0.5);
+  }
+
+  /* Circular icon badge used in the value strip, stats and service cards. */
+  .icon-badge {
+    display: grid;
+    place-items: center;
+    flex: none;
+    border-radius: 9999px;
+  }
+
+  .prose-dim p { color: var(--color-ink-600); line-height: 1.7; }
+  .prose-dim p + p { margin-top: 1rem; }
+
+  /* Full-bleed dark canvas: aurora wash + faint grid. */
+  .canvas-dark {
+    position: relative;
+    isolation: isolate;
+    background: var(--color-navy-900);
+    color: #fff;
+  }
+  .canvas-dark::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(70% 60% at 72% 30%, rgb(119 31 200 / 0.55), transparent 60%),
+      radial-gradient(60% 70% at 8% 70%, rgb(36 105 232 / 0.4), transparent 62%),
+      radial-gradient(50% 50% at 95% 85%, rgb(245 33 106 / 0.28), transparent 65%),
+      linear-gradient(150deg, #070a38, #150e52 52%, #080a35);
+  }
+  .canvas-dark::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.35;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+    background-size: 78px 78px;
+    mask-image: radial-gradient(circle at 60% 35%, #000, transparent 78%);
+  }
+
+  /* The banner is a full-bleed photograph; fade its lower edge so it dissolves
+     into the value strip instead of ending on a hard horizontal seam. */
+  .hero-banner {
+    -webkit-mask-image: linear-gradient(to bottom, #000 68%, rgb(0 0 0 / 0.35) 88%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 68%, rgb(0 0 0 / 0.35) 88%, transparent 100%);
+  }
+
+  .divide-soft { border-color: rgb(255 255 255 / 0.14); }
+}
+
+@layer utilities {
+  .text-accent { color: var(--color-magenta-500); }
+  .balance { text-wrap: balance; }
+
+  /* Scroll-triggered entrance; opted into per element via data-reveal. */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.3, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* ── Fold: reclaiming height on short windows ───────────────────────────────
+   These rules sit outside @layer on purpose. They have to beat the Tailwind
+   utilities on the same elements, and utilities always win against a layer. */
+@media (min-width: 1024px) and (max-height: 899px) {
+  /* Card blurbs are the first thing to go: titles still carry the meaning. */
+  .fold .service-blurb { display: none; }
+}
+
+@media (min-width: 1024px) and (max-height: 820px) {
+  .fold .fold-card { padding: 0.625rem; }
+  .fold .fold-card-icon { height: 1.75rem; width: 1.75rem; }
+}
+
+@media (min-width: 1024px) and (max-height: 780px) {
+  .fold .fold-band-tight { padding-block: 0.5rem; }
+  .fold .fold-strip-row { padding-block: 0.3rem; }
+}
+

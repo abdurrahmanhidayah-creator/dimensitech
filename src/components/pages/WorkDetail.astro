@@ -1,0 +1,118 @@
+---
+import PageHero from '../PageHero.astro';
+import CtaBand from '../CtaBand.astro';
+import Icon from '../Icon.astro';
+import type { CaseStudy } from '../../data/work';
+import { caseStudies } from '../../data/work';
+import { getLang, localize, t } from '../../i18n/ui';
+
+interface Props { study: CaseStudy }
+const { study } = Astro.props;
+const lang = getLang(Astro.url);
+const others = caseStudies.filter((c) => c.slug !== study.slug).slice(0, 3);
+---
+
+<PageHero
+  eyebrow={study.category}
+  title={study.title}
+  lead={study.summary}
+  crumbs={[
+    { label: { en: 'Home', id: 'Beranda' }, href: '/' },
+    { label: { en: 'Our Work', id: 'Portofolio' }, href: '/work' },
+  ]}
+  seed={study.slug.length * 5 + 3}
+>
+  <div class="mt-8 flex flex-wrap gap-2">
+    {study.services.map((s) => (
+      <span class="rounded-full border border-white/20 px-3.5 py-1.5 text-[0.72rem] font-semibold text-slate-200">
+        {t(s, lang)}
+      </span>
+    ))}
+  </div>
+</PageHero>
+
+<section class="bg-white py-16 md:py-20">
+  <div class="shell">
+    <figure class="overflow-hidden rounded-2xl border border-paper-200 shadow-card" data-reveal>
+      <img src={study.shot} alt={t(study.title, lang)} class="w-full object-cover" loading="lazy" decoding="async" />
+    </figure>
+
+    <div class="mt-14 grid gap-12 lg:grid-cols-[1.3fr_1fr]">
+      <div class="prose-dim" data-reveal>
+        <img src={study.logo} alt={study.client} class="h-8 w-auto object-contain" loading="lazy" decoding="async" />
+        <h2 class="mt-6 text-[clamp(1.5rem,2.8vw,2.1rem)]">
+          {lang === 'id' ? 'Tentang kolaborasi ini' : 'About this collaboration'}
+        </h2>
+        <p class="mt-5">{t(study.summary, lang)}</p>
+        <p>
+          {lang === 'id'
+            ? 'Kami mulai dengan memetakan pengguna dan tujuan bisnis, lalu membangun dalam iterasi pendek yang bisa ditinjau klien di setiap milestone. Setiap keputusan desain dan teknis diuji terhadap kebutuhan nyata sebelum masuk ke produksi.'
+            : 'We started by mapping the users and the business goal, then built in short increments the client could review at every milestone. Each design and technical decision was tested against a real need before it reached production.'}
+        </p>
+        <p>
+          {lang === 'id'
+            ? 'Hasilnya diserahterimakan lengkap dengan dokumentasi dan pelatihan, sehingga tim klien dapat melanjutkan pengembangan secara mandiri.'
+            : 'The result was handed over with documentation and training, so the client team could carry development forward on their own.'}
+        </p>
+      </div>
+
+      <aside class="h-fit rounded-2xl border border-paper-200 bg-paper-100 p-8" data-reveal data-reveal-delay="120">
+        <h3 class="text-[1.05rem] font-bold text-ink-900">{lang === 'id' ? 'Ringkasan' : 'At a glance'}</h3>
+        <dl class="mt-6 space-y-5">
+          <div>
+            <dt class="text-[0.68rem] font-bold uppercase tracking-widest text-ink-400">{lang === 'id' ? 'Klien' : 'Client'}</dt>
+            <dd class="mt-1 text-[0.9rem] font-semibold text-ink-900">{study.client}</dd>
+          </div>
+          <div>
+            <dt class="text-[0.68rem] font-bold uppercase tracking-widest text-ink-400">{lang === 'id' ? 'Layanan' : 'Services'}</dt>
+            <dd class="mt-1.5 flex flex-wrap gap-2">
+              {study.services.map((s) => (
+                <span class="rounded-full bg-white px-3 py-1 text-[0.72rem] font-semibold text-ink-600">{t(s, lang)}</span>
+              ))}
+            </dd>
+          </div>
+        </dl>
+        <div class="mt-7 grid grid-cols-2 gap-4 border-t border-paper-200 pt-6">
+          {study.results.map((r) => (
+            <div>
+              <p class="text-[1.6rem] font-extrabold leading-none text-magenta-500">{r.value}</p>
+              <p class="mt-1.5 text-[0.75rem] leading-snug text-ink-600">{t(r.label, lang)}</p>
+            </div>
+          ))}
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="bg-paper-100 py-20">
+  <div class="shell">
+    <div class="flex items-end justify-between gap-6">
+      <h2 class="text-[1.5rem] font-bold text-ink-900">{lang === 'id' ? 'Proyek lainnya' : 'More work'}</h2>
+      <a href={localize('/work', lang)} class="link-arrow shrink-0">
+        {lang === 'id' ? 'Semua portofolio' : 'All work'} <span class="arrow"><Icon name="arrow" size={14} /></span>
+      </a>
+    </div>
+    <div class="mt-8 grid gap-5 sm:grid-cols-3">
+      {others.map((c, i) => (
+        <a href={localize(`/work/${c.slug}`, lang)} class="card group overflow-hidden" data-reveal data-reveal-delay={i * 90}>
+          <div class="aspect-16/10 overflow-hidden bg-white">
+            <img
+              src={c.shot}
+              alt={t(c.title, lang)}
+              class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div class="p-5">
+            <p class="text-[0.65rem] font-bold uppercase tracking-widest text-magenta-500">{c.client}</p>
+            <h3 class="mt-2 text-[0.92rem] font-bold leading-snug text-ink-900">{t(c.title, lang)}</h3>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<CtaBand />

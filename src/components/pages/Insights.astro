@@ -1,0 +1,64 @@
+---
+import PageHero from '../PageHero.astro';
+import CtaBand from '../CtaBand.astro';
+import { pages } from '../../data/pages';
+import { insights, formatDate } from '../../data/insights';
+import { getLang, localize, t } from '../../i18n/ui';
+
+const lang = getLang(Astro.url);
+const p = pages.insights;
+const [lead, ...rest] = insights;
+---
+
+<PageHero
+  eyebrow={p.eyebrow}
+  title={p.title}
+  accent={p.accent}
+  lead={p.lead}
+  crumbs={[{ label: { en: 'Home', id: 'Beranda' }, href: '/' }, { label: p.eyebrow, href: '/insights' }]}
+  seed={61}
+/>
+
+<section class="bg-white py-20 md:py-24">
+  <div class="shell">
+    <a
+      href={localize(`/insights/${lead.slug}`, lang)}
+      class="card group grid gap-8 overflow-hidden p-8 md:grid-cols-[1.3fr_1fr] md:items-center md:p-10"
+      data-reveal
+    >
+      <div>
+        <p class="text-[0.65rem] font-bold uppercase tracking-widest text-magenta-500">
+          {lang === 'id' ? 'Terbaru' : 'Latest'} · {t(lead.category, lang)}
+        </p>
+        <h2 class="mt-3 text-[clamp(1.5rem,2.9vw,2.2rem)] text-ink-900">{t(lead.title, lang)}</h2>
+        <p class="mt-4 text-[0.9rem] leading-relaxed text-ink-600">{t(lead.excerpt, lang)}</p>
+        <p class="mt-6 text-[0.75rem] text-ink-400">
+          {formatDate(lead.date, lang)} · {lead.readingTime} {lang === 'id' ? 'menit baca' : 'min read'}
+        </p>
+      </div>
+      <div class="hidden aspect-4/3 items-end justify-end rounded-xl bg-gradient-to-br from-navy-800 via-violet-600 to-magenta-500 p-8 md:flex">
+        <span class="text-[3.4rem] font-extrabold leading-none text-white/25">01</span>
+      </div>
+    </a>
+
+    <div class="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {rest.map((post, i) => (
+        <a
+          href={localize(`/insights/${post.slug}`, lang)}
+          class="card flex flex-col p-7"
+          data-reveal
+          data-reveal-delay={(i % 3) * 90}
+        >
+          <p class="text-[0.65rem] font-bold uppercase tracking-widest text-magenta-500">{t(post.category, lang)}</p>
+          <h2 class="mt-3 text-[1.05rem] font-bold leading-snug text-ink-900">{t(post.title, lang)}</h2>
+          <p class="mt-3 flex-1 text-[0.83rem] leading-relaxed text-ink-600">{t(post.excerpt, lang)}</p>
+          <p class="mt-6 text-[0.72rem] text-ink-400">
+            {formatDate(post.date, lang)} · {post.readingTime} {lang === 'id' ? 'menit baca' : 'min read'}
+          </p>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<CtaBand />

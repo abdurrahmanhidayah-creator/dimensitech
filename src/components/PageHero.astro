@@ -1,0 +1,48 @@
+---
+import Starfield from './Starfield.astro';
+import Icon from './Icon.astro';
+import { getLang, localize, t, type L } from '../i18n/ui';
+
+interface Props {
+  eyebrow: L | string;
+  title: L | string;
+  accent?: L | string;
+  lead?: L | string;
+  /** Optional breadcrumb: `[{ label, href }]` with English-rooted hrefs. */
+  crumbs?: { label: L | string; href: string }[];
+  seed?: number;
+}
+
+const lang = getLang(Astro.url);
+const { eyebrow, title, accent, lead, crumbs = [], seed = 11 } = Astro.props;
+const text = (v: L | string) => (typeof v === 'string' ? v : t(v, lang));
+---
+
+<section class="canvas-dark relative overflow-hidden pt-[74px]">
+  <Starfield seed={seed} count={70} />
+  <div class="shell relative py-20 md:py-28">
+    {crumbs.length > 0 && (
+      <nav aria-label="Breadcrumb" class="mb-6 flex flex-wrap items-center gap-2 text-[0.7rem] font-semibold text-slate-400">
+        {crumbs.map((c, i) => (
+          <>
+            {i > 0 && <span aria-hidden="true" class="text-slate-600">/</span>}
+            <a href={localize(c.href, lang)} class="transition-colors hover:text-magenta-400">{text(c.label)}</a>
+          </>
+        ))}
+      </nav>
+    )}
+
+    <p class="eyebrow eyebrow-light" data-reveal>{text(eyebrow)}</p>
+    <h1 class="mt-4 max-w-4xl text-[clamp(2.4rem,5.2vw,4rem)] text-white" data-reveal data-reveal-delay="80">
+      {text(title)}
+      {accent && <><br /><span class="text-accent">{text(accent)}</span></>}
+    </h1>
+    {lead && (
+      <p class="mt-6 max-w-2xl text-[0.95rem] leading-relaxed text-slate-300" data-reveal data-reveal-delay="160">
+        {text(lead)}
+      </p>
+    )}
+    <slot />
+  </div>
+  <div class="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-white/6"></div>
+</section>

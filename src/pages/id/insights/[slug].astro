@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import InsightDetail from '../../../components/pages/InsightDetail.astro';
+import { insights } from '../../../data/insights';
+import { t } from '../../../i18n/ui';
+
+export function getStaticPaths() {
+  return insights.map((item) => ({ params: { slug: item.slug }, props: { item } }));
+}
+
+const { item } = Astro.props;
+const lang = 'id' as const;
+---
+<BaseLayout
+  title={`${t(item.title, lang)} — Dimensi`}
+  description={t(item.excerpt, lang)}
+  path={`/insights/${item.slug}`}
+>
+  <InsightDetail post={item} />
+</BaseLayout>

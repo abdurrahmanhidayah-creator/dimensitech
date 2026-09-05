@@ -1,0 +1,161 @@
+---
+import PageHero from '../PageHero.astro';
+import SectionHead from '../SectionHead.astro';
+import StatBand from '../StatBand.astro';
+import CtaBand from '../CtaBand.astro';
+import Icon from '../Icon.astro';
+import Starfield from '../Starfield.astro';
+import { pages } from '../../data/pages';
+import { principles, timeline, process } from '../../data/company';
+import { partners } from '../../data/partners';
+import { getLang, t } from '../../i18n/ui';
+
+const lang = getLang(Astro.url);
+const p = pages.about;
+---
+
+<PageHero
+  eyebrow={p.eyebrow}
+  title={p.title}
+  accent={p.accent}
+  lead={p.lead}
+  crumbs={[{ label: { en: 'Home', id: 'Beranda' }, href: '/' }, { label: p.eyebrow, href: '/about' }]}
+  seed={13}
+/>
+
+<!-- Story -->
+<section class="bg-white py-20 md:py-28">
+  <div class="shell grid gap-12 lg:grid-cols-2 lg:items-center">
+    <div class="relative overflow-hidden rounded-2xl" data-reveal>
+      <img
+        src="/assets/about-network.png"
+        alt={lang === 'id' ? 'Visual jaringan digital Dimensi' : 'Dimensi digital network visual'}
+        class="w-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+    <div class="prose-dim" data-reveal data-reveal-delay="100">
+      <p class="eyebrow">{lang === 'id' ? 'CERITA KAMI' : 'OUR STORY'}</p>
+      <h2 class="mt-3 text-[clamp(1.75rem,3.2vw,2.4rem)]">
+        {lang === 'id' ? 'Konsultan teknologi yang ' : 'A technology partner that '}
+        <span class="text-accent">{lang === 'id' ? 'ikut bertanggung jawab' : 'shares the outcome'}</span>
+      </h2>
+      <p class="mt-5">
+        {lang === 'id'
+          ? 'Dimensi berdiri di Jakarta sebagai tim konsultan kecil dan tumbuh menjadi organisasi lintas disiplin yang mencakup desain, rekayasa perangkat lunak, data, dan penempatan talenta TI.'
+          : 'Dimensi began in Jakarta as a small consulting team and grew into a cross-disciplinary organisation covering design, software engineering, data, and IT talent placement.'}
+      </p>
+      <p>
+        {lang === 'id'
+          ? 'Yang tidak berubah adalah cara kami bekerja: memahami masalah bisnis lebih dulu, memilih teknologi yang bisa dirawat tim Anda, dan menyerahkan hasil yang bisa dilanjutkan tanpa kami.'
+          : 'What has not changed is how we work: understand the business problem first, choose technology your team can operate, and hand over something that keeps working without us.'}
+      </p>
+      <p>
+        {lang === 'id'
+          ? 'Lebih dari 250 proyek kemudian, prinsip itu masih menjadi dasar setiap keputusan yang kami ambil bersama klien.'
+          : 'More than 250 projects later, that principle still shapes every decision we make with a client.'}
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="canvas-dark relative overflow-hidden py-16">
+  <Starfield seed={17} count={60} />
+  <div class="shell relative">
+    <StatBand />
+  </div>
+</section>
+
+<!-- Principles -->
+<section class="bg-paper-100 py-20 md:py-28">
+  <div class="shell">
+    <SectionHead
+      eyebrow={{ en: 'WHAT DRIVES US', id: 'YANG MENGGERAKKAN KAMI' }}
+      title={{ en: 'Four principles behind', id: 'Empat prinsip di balik' }}
+      accent={{ en: 'every engagement', id: 'setiap kerja sama' }}
+    />
+    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {principles.map((v, i) => (
+        <div class="card p-6" data-reveal data-reveal-delay={i * 90}>
+          <span class="icon-badge h-12 w-12 bg-magenta-500/10 text-magenta-500">
+            <Icon name={v.icon} size={22} />
+          </span>
+          <h3 class="mt-5 text-[1rem] font-bold text-ink-900">{t(v.title, lang)}</h3>
+          <p class="mt-2.5 text-[0.82rem] leading-relaxed text-ink-600">{t(v.body, lang)}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- Process -->
+<section class="bg-white py-20 md:py-28">
+  <div class="shell">
+    <SectionHead
+      eyebrow={{ en: 'HOW WE WORK', id: 'CARA KAMI BEKERJA' }}
+      title={{ en: 'A process built for', id: 'Proses yang dirancang untuk' }}
+      accent={{ en: 'predictable delivery', id: 'pengiriman yang terprediksi' }}
+    />
+    <ol class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {process.map((step, i) => (
+        <li class="relative pt-6" data-reveal data-reveal-delay={i * 100}>
+          <span class="absolute left-0 top-0 h-1 w-12 rounded-full bg-magenta-500"></span>
+          <p class="text-[0.7rem] font-bold tracking-[0.25em] text-ink-400">{step.step}</p>
+          <h3 class="mt-3 text-[1.1rem] font-bold text-ink-900">{t(step.title, lang)}</h3>
+          <p class="mt-2.5 text-[0.83rem] leading-relaxed text-ink-600">{t(step.body, lang)}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<!-- Timeline -->
+<section class="bg-paper-100 py-20 md:py-28">
+  <div class="shell">
+    <SectionHead
+      eyebrow={{ en: 'MILESTONES', id: 'TONGGAK PERJALANAN' }}
+      title={{ en: 'A decade of', id: 'Satu dekade' }}
+      accent={{ en: 'building for others', id: 'membangun untuk orang lain' }}
+    />
+    <ol class="mt-12 space-y-0 border-l border-paper-200 pl-8">
+      {timeline.map((item, i) => (
+        <li class="relative pb-10 last:pb-0" data-reveal data-reveal-delay={i * 90}>
+          <span class="absolute -left-[2.28rem] top-1.5 h-3 w-3 rounded-full bg-magenta-500 ring-4 ring-paper-100"></span>
+          <p class="text-[0.75rem] font-bold tracking-[0.2em] text-magenta-500">{item.year}</p>
+          <h3 class="mt-2 text-[1.1rem] font-bold text-ink-900">{t(item.title, lang)}</h3>
+          <p class="mt-2 max-w-xl text-[0.85rem] leading-relaxed text-ink-600">{t(item.body, lang)}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<!-- Partners -->
+<section class="bg-white py-20 md:py-28">
+  <div class="shell">
+    <SectionHead
+      eyebrow={{ en: 'STRATEGIC PARTNERS', id: 'MITRA STRATEGIS' }}
+      title={{ en: 'We do not do it', id: 'Kami tidak melakukannya' }}
+      accent={{ en: 'alone', id: 'sendirian' }}
+      lead={{
+        en: 'Strategic collaborations across software, cloud, AI, HR technology, healthcare technology, and data analytics.',
+        id: 'Kolaborasi strategis di bidang perangkat lunak, cloud, AI, teknologi SDM, teknologi kesehatan, dan analitik data.',
+      }}
+    />
+    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {partners.map((partner, i) => (
+        <div class="card p-6" data-reveal data-reveal-delay={i * 90}>
+          <div class="flex h-10 items-center">
+            <img src={partner.logo} alt={partner.name} class="max-h-8 w-auto object-contain" loading="lazy" decoding="async" />
+          </div>
+          <h3 class="mt-5 text-[0.95rem] font-bold text-ink-900">{partner.name}</h3>
+          <p class="mt-2 text-[0.8rem] leading-relaxed text-ink-600">{t(partner.blurb, lang)}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<CtaBand />

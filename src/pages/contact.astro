@@ -1,0 +1,8 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Contact from '../components/pages/Contact.astro';
+import { pages } from '../data/pages';
+---
+<BaseLayout title={pages.contact.metaTitle} description={pages.contact.metaDescription} path="/contact">
+  <Contact />
+</BaseLayout>

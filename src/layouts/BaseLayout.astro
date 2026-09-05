@@ -1,0 +1,100 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getLang, alternatePath, localize, t } from '../i18n/ui';
+import { ui } from '../data/site';
+import type { L } from '../i18n/ui';
+
+interface Props {
+  title: string | L;
+  description: string | L;
+  /** Canonical, English-rooted path for this page, e.g. `/services/design-system`. */
+  path?: string;
+}
+
+const lang = getLang(Astro.url);
+const { title, description, path = '/' } = Astro.props;
+
+const asText = (v: string | L) => (typeof v === 'string' ? v : t(v, lang));
+const pageTitle = asText(title);
+const pageDescription = asText(description);
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).href;
+const enHref = new URL(localize(path, 'en'), Astro.site ?? Astro.url.origin).href;
+const idHref = new URL(localize(path, 'id'), Astro.site ?? Astro.url.origin).href;
+---
+
+<!doctype html>
+<html lang={lang === 'id' ? 'id-ID' : 'en'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={enHref} />
+    <link rel="alternate" hreflang="id" href={idHref} />
+    <link rel="alternate" hreflang="x-default" href={enHref} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === 'id' ? 'id_ID' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#080b38" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <slot name="head" />
+  </head>
+  <body class="bg-white">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-magenta-500 focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white"
+      >{t(ui.skipToContent, lang)}</a
+    >
+
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      // Reveal-on-scroll for anything marked with data-reveal.
+      const targets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      const show = (el: HTMLElement) =>
+        window.setTimeout(() => el.classList.add('is-visible'), Number(el.dataset.revealDelay ?? 0));
+
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              observer.unobserve(entry.target);
+              show(entry.target as HTMLElement);
+            });
+          },
+          { rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+        );
+
+        // The opening screen animates in on load; everything below waits for a scroll.
+        requestAnimationFrame(() => {
+          targets.forEach((el) => {
+            if (el.getBoundingClientRect().top < window.innerHeight) show(el);
+            else observer.observe(el);
+          });
+        });
+      } else {
+        targets.forEach((el) => el.classList.add('is-visible'));
+      }
+    </script>
+  </body>
+</html>

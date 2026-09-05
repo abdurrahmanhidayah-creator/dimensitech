@@ -1,0 +1,66 @@
+---
+import PageHero from '../PageHero.astro';
+import SectionHead from '../SectionHead.astro';
+import CtaBand from '../CtaBand.astro';
+import Icon from '../Icon.astro';
+import { pages } from '../../data/pages';
+import { services } from '../../data/services';
+import { process } from '../../data/company';
+import { getLang, localize, t } from '../../i18n/ui';
+
+const lang = getLang(Astro.url);
+const p = pages.services;
+---
+
+<PageHero
+  eyebrow={p.eyebrow}
+  title={p.title}
+  accent={p.accent}
+  lead={p.lead}
+  crumbs={[{ label: { en: 'Home', id: 'Beranda' }, href: '/' }, { label: p.eyebrow, href: '/services' }]}
+  seed={29}
+/>
+
+<section class="bg-paper-100 py-20 md:py-28">
+  <div class="shell grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    {services.map((s, i) => (
+      <a
+        href={localize(`/services/${s.slug}`, lang)}
+        class="card group flex flex-col p-7"
+        data-reveal
+        data-reveal-delay={(i % 3) * 90}
+      >
+        <span class="icon-badge h-13 w-13 bg-azure-500/10 p-3 text-azure-500 transition-colors group-hover:bg-magenta-500/12 group-hover:text-magenta-500">
+          <Icon name={s.icon} size={24} />
+        </span>
+        <h2 class="mt-5 text-[1.15rem] font-bold text-ink-900">{t(s.title, lang)}</h2>
+        <p class="mt-3 flex-1 text-[0.85rem] leading-relaxed text-ink-600">{t(s.short, lang)}</p>
+        <span class="link-arrow mt-6 text-[0.75rem]">
+          {lang === 'id' ? 'Lihat detail' : 'View details'} <span class="arrow"><Icon name="arrow" size={14} /></span>
+        </span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<section class="bg-white py-20 md:py-28">
+  <div class="shell">
+    <SectionHead
+      eyebrow={{ en: 'HOW WE WORK', id: 'CARA KAMI BEKERJA' }}
+      title={{ en: 'The same four steps,', id: 'Empat langkah yang sama,' }}
+      accent={{ en: 'whatever we build', id: 'apa pun yang kami bangun' }}
+    />
+    <ol class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {process.map((step, i) => (
+        <li class="relative pt-6" data-reveal data-reveal-delay={i * 100}>
+          <span class="absolute left-0 top-0 h-1 w-12 rounded-full bg-magenta-500"></span>
+          <p class="text-[0.7rem] font-bold tracking-[0.25em] text-ink-400">{step.step}</p>
+          <h3 class="mt-3 text-[1.1rem] font-bold text-ink-900">{t(step.title, lang)}</h3>
+          <p class="mt-2.5 text-[0.83rem] leading-relaxed text-ink-600">{t(step.body, lang)}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<CtaBand />

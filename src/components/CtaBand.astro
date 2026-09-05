@@ -1,0 +1,27 @@
+---
+import Starfield from './Starfield.astro';
+import Icon from './Icon.astro';
+import { cta, ui, site } from '../data/site';
+import { getLang, localize, t } from '../i18n/ui';
+
+const lang = getLang(Astro.url);
+---
+
+<section class="canvas-dark relative overflow-hidden">
+  <Starfield seed={31} count={55} />
+  <div class="shell relative flex flex-col gap-10 py-20 lg:flex-row lg:items-center lg:justify-between lg:py-24">
+    <div class="max-w-xl" data-reveal>
+      <p class="eyebrow eyebrow-light">{t(cta.eyebrow, lang)}</p>
+      <h2 class="mt-4 text-[clamp(1.9rem,3.6vw,2.9rem)] text-white">
+        {t(cta.title, lang)}<br /><span class="text-accent">{t(cta.titleAccent, lang)}</span>
+      </h2>
+      <p class="mt-5 text-[0.92rem] leading-relaxed text-slate-300">{t(cta.body, lang)}</p>
+    </div>
+    <div class="flex flex-col gap-3 sm:flex-row lg:flex-col lg:items-end" data-reveal data-reveal-delay="120">
+      <a href={localize('/contact', lang)} class="btn">
+        {t(ui.letsTalk, lang)} <span class="arrow"><Icon name="arrow" size={16} /></span>
+      </a>
+      <a href={`mailto:${site.email}`} class="btn btn-ghost">{site.email}</a>
+    </div>
+  </div>
+</section>

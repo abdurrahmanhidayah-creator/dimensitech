@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Starfield from '../../components/Starfield.astro';
+import Icon from '../../components/Icon.astro';
+import { nav } from '../../data/site';
+import { getLang, localize, t } from '../../i18n/ui';
+
+const lang = getLang(Astro.url);
+const copy = {
+  title: { en: 'Page not found', id: 'Halaman tidak ditemukan' },
+  lead: {
+    en: 'The page you are looking for has moved or never existed. Here is where else you can go.',
+    id: 'Halaman yang Anda cari sudah dipindahkan atau memang tidak pernah ada. Berikut tujuan lain yang bisa Anda buka.',
+  },
+  home: { en: 'Back to home', id: 'Kembali ke beranda' },
+};
+---
+
+<BaseLayout title={`404 — Dimensi`} description={t(copy.lead, lang)} path="/">
+  <section class="canvas-dark relative flex min-h-[76vh] items-center overflow-hidden pt-[74px]">
+    <Starfield seed={97} count={90} />
+    <div class="shell relative py-20 text-center">
+      <p class="text-[clamp(5rem,16vw,10rem)] font-extrabold leading-none tracking-tighter text-white/12">404</p>
+      <h1 class="-mt-6 text-[clamp(1.9rem,4vw,3rem)] text-white">{t(copy.title, lang)}</h1>
+      <p class="mx-auto mt-5 max-w-lg text-[0.92rem] leading-relaxed text-slate-300">{t(copy.lead, lang)}</p>
+      <a href={localize('/', lang)} class="btn mt-9">
+        {t(copy.home, lang)} <span class="arrow"><Icon name="arrow" size={16} /></span>
+      </a>
+      <ul class="mt-12 flex flex-wrap items-center justify-center gap-x-7 gap-y-3">
+        {nav.slice(1).map((item) => (
+          <li>
+            <a href={localize(item.href, lang)} class="text-[0.82rem] font-semibold text-slate-300 transition-colors hover:text-magenta-400">
+              {t(item.label, lang)}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
