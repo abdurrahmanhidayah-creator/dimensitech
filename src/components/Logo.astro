@@ -7,22 +7,13 @@ interface Props {
 const { class: className = '', dark = false } = Astro.props;
 ---
 
-<span class={`inline-flex items-center gap-2.5 ${className}`}>
-  <svg width="34" height="40" viewBox="0 0 34 40" fill="none" aria-hidden="true" class="shrink-0">
-    <defs>
-      <linearGradient id="dm-mark" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#ff4f8b" />
-        <stop offset="52%" stop-color="#f5216a" />
-        <stop offset="100%" stop-color="#a3125a" />
-      </linearGradient>
-    </defs>
-    <path d="M8 0h26v32a8 8 0 0 1-8 8H0V8a8 8 0 0 1 8-8Z" fill="url(#dm-mark)" />
-    <path d="M34 0 21 12v20l13-13V0Z" fill="#000" fill-opacity="0.22" />
-    <path d="M13 10.5h5.5v19H13v-19Z" fill="#fff" />
-    <path d="M13 10.5 8.5 15v3.6l4.5-4.4V10.5Z" fill="#fff" fill-opacity="0.75" />
-  </svg>
-  <span
-    class={`text-[1.55rem] font-extrabold leading-none tracking-[-0.045em] ${
-      dark ? 'text-ink-900' : 'text-white'
-    }`}>dimensi</span>
+<span class={`inline-flex items-center ${className}`}>
+  <img
+    src="/assets/logo-dimensi.png"
+    alt="Dimensi"
+    class:list={[
+      'h-9 w-auto object-contain',
+      dark ? 'brightness-0' : '',
+    ]}
+  />
 </span>
