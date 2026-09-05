@@ -1,0 +1,297 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { nav, ui } from '../data/site';
+import { services } from '../data/services';
+import { industries } from '../data/industries';
+import { insights } from '../data/insights';
+import { jobs } from '../data/careers';
+import { getLang, localize, t, alternatePath, type Lang } from '../i18n/ui';
+
+const lang: Lang = getLang(Astro.url);
+const here = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const isActive = (href: string) => {
+  const target = localize(href, lang);
+  return href === '/' ? here === target : here === target || here.startsWith(`${target}/`);
+};
+
+/** Everything the in-page search can jump to, built at compile time. */
+const searchIndex = [
+  ...nav.map((n) => ({
+    title: t(n.label, lang),
+    kind: lang === 'id' ? 'Halaman' : 'Page',
+    href: localize(n.href, lang),
+  })),
+  ...services.map((s) => ({
+    title: t(s.title, lang),
+    kind: lang === 'id' ? 'Layanan' : 'Service',
+    href: localize(`/services/${s.slug}`, lang),
+  })),
+  ...industries.map((i) => ({
+    title: t(i.name, lang),
+    kind: lang === 'id' ? 'Industri' : 'Industry',
+    href: localize(`/industries#${i.slug}`, lang),
+  })),
+  ...insights.map((i) => ({
+    title: t(i.title, lang),
+    kind: lang === 'id' ? 'Artikel' : 'Article',
+    href: localize(`/insights/${i.slug}`, lang),
+  })),
+  ...jobs.map((j) => ({
+    title: t(j.title, lang),
+    kind: lang === 'id' ? 'Lowongan' : 'Role',
+    href: localize(`/careers/${j.slug}`, lang),
+  })),
+];
+
+const switchHref = alternatePath(Astro.url, lang);
+const noResults = lang === 'id' ? 'Tidak ada hasil.' : 'No results found.';
+---
+
+<header
+  id="site-header"
+  class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-navy-950/70 backdrop-blur-xl transition-colors duration-300"
+>
+  <div class="shell flex h-[74px] items-center gap-4">
+    <a href={localize('/', lang)} class="shrink-0" aria-label="Dimensi">
+      <Logo />
+    </a>
+
+    <!-- Desktop navigation -->
+    <nav class="ml-auto hidden items-center gap-1 xl:flex" aria-label="Primary">
+      {nav.map((item) =>
+        item.href === '/services' ? (
+          <div class="group relative" data-dropdown>
+            <a
+              href={localize(item.href, lang)}
+              aria-haspopup="true"
+              class:list={[
+                'flex items-center gap-1.5 rounded px-3 py-2 text-[0.8rem] font-medium transition-colors',
+                isActive(item.href) ? 'text-magenta-400' : 'text-slate-200 hover:text-white',
+              ]}
+            >
+              {t(item.label, lang)}
+              <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true" class="mt-px transition-transform duration-200 group-hover:rotate-180">
+                <path d="m2.5 4.5 3.5 3.5 3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+            <div
+              class="invisible absolute left-1/2 top-full z-10 w-[540px] -translate-x-1/2 translate-y-1 pt-3 opacity-0 transition-all duration-200 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100"
+            >
+              <div class="grid grid-cols-2 gap-1 rounded-2xl border border-white/12 bg-navy-900/97 p-3 shadow-2xl backdrop-blur-xl">
+                {services.map((s) => (
+                  <a
+                    href={localize(`/services/${s.slug}`, lang)}
+                    class="flex items-start gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-white/8"
+                  >
+                    <span class="icon-badge mt-0.5 h-8 w-8 bg-magenta-500/15 text-magenta-400">
+                      <Icon name={s.icon} size={16} />
+                    </span>
+                    <span class="min-w-0">
+                      <span class="block text-[0.8rem] font-semibold text-white">{t(s.title, lang)}</span>
+                      <span class="mt-0.5 block text-[0.7rem] leading-snug text-slate-400 line-clamp-2">{t(s.short, lang)}</span>
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <a
+            href={localize(item.href, lang)}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            class:list={[
+              'relative rounded px-3 py-2 text-[0.8rem] font-medium transition-colors',
+              isActive(item.href) ? 'text-magenta-400' : 'text-slate-200 hover:text-white',
+            ]}
+          >
+            {t(item.label, lang)}
+            {isActive(item.href) && (
+              <span class="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-magenta-500"></span>
+            )}
+          </a>
+        )
+      )}
+    </nav>
+
+    <div class="ml-auto flex items-center gap-2 xl:ml-6">
+      <button
+        type="button"
+        data-search-open
+        aria-label={t(ui.search, lang)}
+        class="hidden h-10 w-[92px] items-center justify-center rounded-lg border border-white/25 text-slate-200 transition-colors hover:border-white/60 hover:text-white md:flex"
+      >
+        <Icon name="search" size={17} />
+      </button>
+
+      <a
+        href={switchHref}
+        hreflang={lang === 'en' ? 'id' : 'en'}
+        class="hidden h-10 items-center rounded-lg border border-white/25 px-3 text-[0.7rem] font-bold tracking-wider text-slate-200 transition-colors hover:border-white/60 hover:text-white md:flex"
+      >
+        {lang === 'en' ? 'ID' : 'EN'}
+      </a>
+
+      <a href={localize('/contact', lang)} class="btn btn-sm hidden sm:inline-flex">
+        {t(ui.letsTalk, lang)}
+      </a>
+
+      <button
+        type="button"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        aria-label={t(ui.menu, lang)}
+        class="grid h-10 w-10 place-items-center rounded-lg border border-white/25 text-white xl:hidden"
+      >
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M2 4.5h14M2 9h14M2 13.5h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile drawer -->
+  <div
+    id="mobile-nav"
+    hidden
+    class="max-h-[calc(100dvh-74px)] overflow-y-auto border-t border-white/10 bg-navy-950/98 px-5 pb-8 pt-4 backdrop-blur-xl xl:hidden"
+  >
+    <nav class="flex flex-col" aria-label="Mobile">
+      {nav.map((item) => (
+        <a
+          href={localize(item.href, lang)}
+          class:list={[
+            'border-b border-white/8 py-3.5 text-[0.95rem] font-semibold',
+            isActive(item.href) ? 'text-magenta-400' : 'text-slate-100',
+          ]}
+        >
+          {t(item.label, lang)}
+        </a>
+      ))}
+    </nav>
+    <div class="mt-5 flex items-center gap-3">
+      <a href={localize('/contact', lang)} class="btn flex-1">{t(ui.letsTalk, lang)}</a>
+      <a
+        href={switchHref}
+        class="grid h-[46px] w-[54px] place-items-center rounded-lg border border-white/25 text-[0.75rem] font-bold text-slate-200"
+      >
+        {lang === 'en' ? 'ID' : 'EN'}
+      </a>
+      <button
+        type="button"
+        data-search-open
+        aria-label={t(ui.search, lang)}
+        class="grid h-[46px] w-[54px] place-items-center rounded-lg border border-white/25 text-slate-200"
+      >
+        <Icon name="search" size={17} />
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Search overlay -->
+<div
+  id="search-overlay"
+  hidden
+  class="fixed inset-0 z-[60] flex justify-center bg-navy-950/80 p-4 pt-[14vh] backdrop-blur-sm"
+>
+  <div class="h-fit w-full max-w-xl overflow-hidden rounded-2xl border border-white/12 bg-navy-900 shadow-2xl">
+    <div class="flex items-center gap-3 border-b border-white/10 px-4">
+      <span class="text-slate-400"><Icon name="search" size={18} /></span>
+      <input
+        id="search-input"
+        type="search"
+        autocomplete="off"
+        placeholder={t(ui.searchPlaceholder, lang)}
+        class="h-14 flex-1 bg-transparent text-[0.95rem] text-white placeholder:text-slate-500 focus:outline-none"
+      />
+      <button type="button" data-search-close class="rounded px-2 py-1 text-[0.7rem] font-bold text-slate-400 hover:text-white">
+        ESC
+      </button>
+    </div>
+    <ul id="search-results" class="max-h-[52vh] overflow-y-auto p-2" data-empty={noResults}></ul>
+  </div>
+</div>
+
+<script is:inline set:html={`window.__DIMENSI_SEARCH__ = ${JSON.stringify(searchIndex)};`} />
+
+<script>
+  const header = document.getElementById('site-header');
+  const drawer = document.getElementById('mobile-nav');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const overlay = document.getElementById('search-overlay');
+  const input = document.getElementById('search-input') as HTMLInputElement | null;
+  const results = document.getElementById('search-results');
+
+  const onScroll = () => {
+    header?.classList.toggle('bg-navy-950/95', window.scrollY > 12);
+    header?.classList.toggle('shadow-2xl', window.scrollY > 12);
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  toggle?.addEventListener('click', () => {
+    if (!drawer) return;
+    const open = drawer.hidden;
+    drawer.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+
+  const closeSearch = () => {
+    if (!overlay) return;
+    overlay.hidden = true;
+    document.body.style.overflow = '';
+  };
+
+  const openSearch = () => {
+    if (!overlay) return;
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+    input?.focus();
+    input?.select();
+  };
+
+  document.querySelectorAll('[data-search-open]').forEach((el) => el.addEventListener('click', openSearch));
+  document.querySelectorAll('[data-search-close]').forEach((el) => el.addEventListener('click', closeSearch));
+  overlay?.addEventListener('click', (e) => {
+    if (e.target === overlay) closeSearch();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeSearch();
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      overlay?.hidden ? openSearch() : closeSearch();
+    }
+  });
+
+  type Entry = { title: string; kind: string; href: string };
+  const index: Entry[] = (window as any).__DIMENSI_SEARCH__ ?? [];
+
+  const render = (query: string) => {
+    if (!results) return;
+    const q = query.trim().toLowerCase();
+    const hits = q
+      ? index.filter((e) => e.title.toLowerCase().includes(q) || e.kind.toLowerCase().includes(q)).slice(0, 8)
+      : index.slice(0, 6);
+
+    if (!hits.length) {
+      results.innerHTML = `<li class="px-4 py-6 text-center text-sm text-slate-500">${results.dataset.empty}</li>`;
+      return;
+    }
+
+    results.innerHTML = hits
+      .map(
+        (e) => `<li><a href="${e.href}" class="flex items-center justify-between gap-4 rounded-xl px-4 py-3 hover:bg-white/8">
+          <span class="text-sm font-semibold text-white">${e.title}</span>
+          <span class="shrink-0 text-[0.65rem] font-bold uppercase tracking-widest text-magenta-400">${e.kind}</span>
+        </a></li>`
+      )
+      .join('');
+  };
+
+  render('');
+  input?.addEventListener('input', () => render(input.value));
+</script>

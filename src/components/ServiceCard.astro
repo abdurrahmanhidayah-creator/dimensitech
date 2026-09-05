@@ -1,0 +1,49 @@
+---
+import Icon from './Icon.astro';
+import type { Service } from '../data/services';
+import { getLang, localize, t } from '../i18n/ui';
+
+interface Props {
+  service: Service;
+  index?: number;
+  /** Narrow variant for the eight-across row on the home page. */
+  compact?: boolean;
+}
+
+const { service, index = 0, compact = false } = Astro.props;
+const lang = getLang(Astro.url);
+---
+
+<a
+  href={localize(`/services/${service.slug}`, lang)}
+  class:list={['card group flex flex-col', compact ? 'fold-card p-3' : 'p-6']}
+  data-reveal
+  data-reveal-delay={(index % (compact ? 8 : 4)) * (compact ? 55 : 80)}
+>
+  <span
+    class:list={[
+      'icon-badge bg-azure-500/10 text-azure-500 transition-colors duration-300 group-hover:bg-magenta-500/12 group-hover:text-magenta-500',
+      compact ? 'fold-card-icon h-8 w-8' : 'h-12 w-12',
+    ]}
+  >
+    <Icon name={service.icon} size={compact ? 16 : 22} />
+  </span>
+  <h3
+    class:list={[
+      'font-bold leading-snug text-ink-900',
+      compact ? 'mt-3 text-[0.78rem]' : 'mt-5 text-[1.02rem]',
+    ]}
+  >
+    {t(service.title, lang)}
+  </h3>
+  <p
+    class:list={[
+      'flex-1 text-ink-600',
+      compact
+        ? 'service-blurb mt-1.5 line-clamp-2 text-[0.68rem] leading-[1.45] xl:line-clamp-3'
+        : 'mt-2.5 text-[0.8rem] leading-relaxed',
+    ]}
+  >
+    {compact ? t(service.blurb, lang) : t(service.short, lang)}
+  </p>
+</a>

@@ -1,0 +1,97 @@
+---
+import PageHero from '../PageHero.astro';
+import CtaBand from '../CtaBand.astro';
+import Icon from '../Icon.astro';
+import type { Service } from '../../data/services';
+import { services } from '../../data/services';
+import { getLang, localize, t } from '../../i18n/ui';
+import { ui } from '../../data/site';
+
+interface Props { service: Service }
+const { service } = Astro.props;
+const lang = getLang(Astro.url);
+const others = services.filter((s) => s.slug !== service.slug).slice(0, 3);
+---
+
+<PageHero
+  eyebrow={{ en: 'OUR SERVICES', id: 'LAYANAN KAMI' }}
+  title={service.title}
+  lead={service.short}
+  crumbs={[
+    { label: { en: 'Home', id: 'Beranda' }, href: '/' },
+    { label: { en: 'Our Services', id: 'Layanan' }, href: '/services' },
+  ]}
+  seed={service.slug.length * 3 + 7}
+>
+  <span class="icon-badge mt-8 h-14 w-14 bg-white/8 text-magenta-400 ring-1 ring-inset ring-white/15">
+    <Icon name={service.icon} size={26} />
+  </span>
+</PageHero>
+
+<section class="bg-white py-20 md:py-24">
+  <div class="shell grid gap-14 lg:grid-cols-[1.15fr_1fr]">
+    <div class="prose-dim" data-reveal>
+      <h2 class="text-[clamp(1.6rem,3vw,2.15rem)]">
+        {lang === 'id' ? 'Apa yang Anda dapatkan' : 'What you get'}
+      </h2>
+      <p class="mt-5">{t(service.intro, lang)}</p>
+
+      <h3 class="mt-10 text-[1.15rem] font-bold text-ink-900">
+        {lang === 'id' ? 'Cakupan pekerjaan' : 'Scope of work'}
+      </h3>
+      <ul class="mt-5 space-y-3">
+        {service.deliverables.map((d) => (
+          <li class="flex gap-3 text-[0.88rem] leading-relaxed text-ink-600">
+            <span class="mt-1 shrink-0 text-magenta-500"><Icon name="arrow" size={15} /></span>
+            {t(d, lang)}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <aside class="h-fit rounded-2xl border border-paper-200 bg-paper-100 p-8" data-reveal data-reveal-delay="120">
+      <h3 class="text-[1.05rem] font-bold text-ink-900">
+        {lang === 'id' ? 'Hasil yang diharapkan' : 'Outcomes to expect'}
+      </h3>
+      <ul class="mt-6 space-y-5">
+        {service.outcomes.map((o) => (
+          <li class="flex gap-3">
+            <span class="icon-badge mt-0.5 h-7 w-7 shrink-0 bg-magenta-500/12 text-magenta-500">
+              <Icon name="spark" size={14} />
+            </span>
+            <span class="text-[0.86rem] leading-relaxed text-ink-600">{t(o, lang)}</span>
+          </li>
+        ))}
+      </ul>
+      <a href={localize('/contact', lang)} class="btn mt-8 w-full">
+        {t(ui.letsTalk, lang)} <span class="arrow"><Icon name="arrow" size={15} /></span>
+      </a>
+    </aside>
+  </div>
+</section>
+
+<section class="bg-paper-100 py-20">
+  <div class="shell">
+    <div class="flex items-end justify-between gap-6">
+      <h2 class="text-[1.5rem] font-bold text-ink-900">
+        {lang === 'id' ? 'Layanan lainnya' : 'Other services'}
+      </h2>
+      <a href={localize('/services', lang)} class="link-arrow shrink-0">
+        {t(ui.backTo, lang)} <span class="arrow"><Icon name="arrow" size={14} /></span>
+      </a>
+    </div>
+    <div class="mt-8 grid gap-5 sm:grid-cols-3">
+      {others.map((s, i) => (
+        <a href={localize(`/services/${s.slug}`, lang)} class="card group p-6" data-reveal data-reveal-delay={i * 90}>
+          <span class="icon-badge h-11 w-11 bg-azure-500/10 text-azure-500 transition-colors group-hover:bg-magenta-500/12 group-hover:text-magenta-500">
+            <Icon name={s.icon} size={20} />
+          </span>
+          <h3 class="mt-4 text-[0.98rem] font-bold text-ink-900">{t(s.title, lang)}</h3>
+          <p class="mt-2 text-[0.8rem] leading-relaxed text-ink-600">{t(s.short, lang)}</p>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<CtaBand />

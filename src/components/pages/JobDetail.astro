@@ -1,0 +1,109 @@
+---
+import PageHero from '../PageHero.astro';
+import CtaBand from '../CtaBand.astro';
+import Icon from '../Icon.astro';
+import type { Job } from '../../data/careers';
+import { jobs } from '../../data/careers';
+import { site, ui } from '../../data/site';
+import { getLang, localize, t } from '../../i18n/ui';
+
+interface Props { job: Job }
+const { job } = Astro.props;
+const lang = getLang(Astro.url);
+const others = jobs.filter((j) => j.slug !== job.slug).slice(0, 3);
+const subject = encodeURIComponent(`Application — ${t(job.title, 'en')}`);
+---
+
+<PageHero
+  eyebrow={job.department}
+  title={job.title}
+  lead={job.summary}
+  crumbs={[
+    { label: { en: 'Home', id: 'Beranda' }, href: '/' },
+    { label: { en: 'Careers', id: 'Karier' }, href: '/careers' },
+  ]}
+  seed={job.slug.length * 6 + 5}
+>
+  <div class="mt-8 flex flex-wrap gap-2">
+    {[job.location, job.type, job.level].map((tag) => (
+      <span class="rounded-full border border-white/20 px-3.5 py-1.5 text-[0.72rem] font-semibold text-slate-200">
+        {t(tag, lang)}
+      </span>
+    ))}
+  </div>
+</PageHero>
+
+<section class="bg-white py-20 md:py-24">
+  <div class="shell grid gap-14 lg:grid-cols-[1.3fr_1fr]">
+    <div data-reveal>
+      <h2 class="text-[1.3rem] font-bold text-ink-900">{lang === 'id' ? 'Tanggung jawab' : 'What you will do'}</h2>
+      <ul class="mt-5 space-y-3">
+        {job.responsibilities.map((r) => (
+          <li class="flex gap-3 text-[0.88rem] leading-relaxed text-ink-600">
+            <span class="mt-1 shrink-0 text-magenta-500"><Icon name="arrow" size={15} /></span>
+            {t(r, lang)}
+          </li>
+        ))}
+      </ul>
+
+      <h2 class="mt-12 text-[1.3rem] font-bold text-ink-900">{lang === 'id' ? 'Kualifikasi' : 'What we look for'}</h2>
+      <ul class="mt-5 space-y-3">
+        {job.requirements.map((r) => (
+          <li class="flex gap-3 text-[0.88rem] leading-relaxed text-ink-600">
+            <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-magenta-500"></span>
+            {t(r, lang)}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <aside class="h-fit rounded-2xl border border-paper-200 bg-paper-100 p-8" data-reveal data-reveal-delay="120">
+      <h2 class="text-[1.05rem] font-bold text-ink-900">{lang === 'id' ? 'Ringkasan posisi' : 'Role summary'}</h2>
+      <dl class="mt-6 space-y-4 text-[0.85rem]">
+        {[
+          [{ en: 'Department', id: 'Departemen' }, job.department],
+          [{ en: 'Location', id: 'Lokasi' }, job.location],
+          [{ en: 'Employment', id: 'Status' }, job.type],
+          [{ en: 'Level', id: 'Level' }, job.level],
+        ].map(([label, value]) => (
+          <div class="flex justify-between gap-4 border-b border-paper-200 pb-3 last:border-0">
+            <dt class="text-ink-400">{t(label as any, lang)}</dt>
+            <dd class="text-right font-semibold text-ink-900">{t(value as any, lang)}</dd>
+          </div>
+        ))}
+      </dl>
+      <a href={`mailto:${site.email}?subject=${subject}`} class="btn mt-7 w-full">
+        {t(ui.applyNow, lang)} <span class="arrow"><Icon name="arrow" size={15} /></span>
+      </a>
+      <p class="mt-4 text-center text-[0.75rem] leading-relaxed text-ink-400">
+        {lang === 'id'
+          ? 'Sertakan CV dan portofolio atau tautan repositori Anda.'
+          : 'Attach your CV plus a portfolio or repository link.'}
+      </p>
+    </aside>
+  </div>
+</section>
+
+{others.length > 0 && (
+  <section class="bg-paper-100 py-20">
+    <div class="shell">
+      <div class="flex items-end justify-between gap-6">
+        <h2 class="text-[1.5rem] font-bold text-ink-900">{lang === 'id' ? 'Posisi lainnya' : 'Other roles'}</h2>
+        <a href={localize('/careers', lang)} class="link-arrow shrink-0">
+          {lang === 'id' ? 'Semua lowongan' : 'All roles'} <span class="arrow"><Icon name="arrow" size={14} /></span>
+        </a>
+      </div>
+      <div class="mt-8 grid gap-5 sm:grid-cols-3">
+        {others.map((j, i) => (
+          <a href={localize(`/careers/${j.slug}`, lang)} class="card p-6" data-reveal data-reveal-delay={i * 90}>
+            <p class="text-[0.65rem] font-bold uppercase tracking-widest text-magenta-500">{t(j.department, lang)}</p>
+            <h3 class="mt-3 text-[1rem] font-bold text-ink-900">{t(j.title, lang)}</h3>
+            <p class="mt-2 text-[0.78rem] text-ink-600">{t(j.location, lang)}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<CtaBand />

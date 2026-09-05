@@ -1,0 +1,86 @@
+---
+/**
+ * The constellation backdrop from the landing artwork: scattered stars with
+ * faint links between close neighbours, plus a few drifting polygons.
+ * Points are generated from a fixed seed so the markup is stable across builds.
+ */
+interface Props {
+  seed?: number;
+  count?: number;
+  class?: string;
+}
+
+const { seed = 7, count = 90, class: className = '' } = Astro.props;
+
+const W = 1440;
+const H = 900;
+
+/** Mulberry32 — small, deterministic, good enough for decorative scatter. */
+function rng(s: number) {
+  return () => {
+    s |= 0;
+    s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const rand = rng(seed);
+const stars = Array.from({ length: count }, () => ({
+  x: +(rand() * W).toFixed(1),
+  y: +(rand() * H).toFixed(1),
+  r: +(rand() * 1.5 + 0.4).toFixed(2),
+  o: +(rand() * 0.55 + 0.2).toFixed(2),
+}));
+
+// Link each star to nearby ones to get the network effect, capped per star.
+const LINK_DISTANCE = 148;
+const links: { a: (typeof stars)[number]; b: (typeof stars)[number]; o: number }[] = [];
+for (let i = 0; i < stars.length; i++) {
+  let made = 0;
+  for (let j = i + 1; j < stars.length && made < 3; j++) {
+    const d = Math.hypot(stars[i].x - stars[j].x, stars[i].y - stars[j].y);
+    if (d < LINK_DISTANCE) {
+      links.push({ a: stars[i], b: stars[j], o: +(0.16 * (1 - d / LINK_DISTANCE)).toFixed(3) });
+      made++;
+    }
+  }
+}
+
+const polygons = [
+  { points: '0,0 46,18 12,52', x: 168, y: 118, fill: '#7c3ce0', o: 0.5, s: 1 },
+  { points: '0,0 62,24 16,70', x: 1210, y: 96, fill: '#2f6ff0', o: 0.45, s: 1 },
+  { points: '0,0 40,16 10,46', x: 1330, y: 470, fill: '#a13ce0', o: 0.5, s: 1 },
+  { points: '0,0 52,20 14,58', x: 96, y: 620, fill: '#5b2ad0', o: 0.4, s: 1 },
+  { points: '0,0 34,13 8,38', x: 640, y: 760, fill: '#e0357f', o: 0.3, s: 1 },
+];
+---
+
+<svg
+  class={`pointer-events-none absolute inset-0 h-full w-full ${className}`}
+  viewBox={`0 0 ${W} ${H}`}
+  preserveAspectRatio="xMidYMid slice"
+  aria-hidden="true"
+  focusable="false"
+>
+  <g stroke="#b9c6ff">
+    {links.map((l) => (
+      <line x1={l.a.x} y1={l.a.y} x2={l.b.x} y2={l.b.y} stroke-opacity={l.o} stroke-width="0.7" />
+    ))}
+  </g>
+  <g fill="#ffffff">
+    {stars.map((s) => <circle cx={s.x} cy={s.y} r={s.r} fill-opacity={s.o} />)}
+  </g>
+  <!-- The slice fit blows these up on narrow viewports, so drop them there. -->
+  <g class="max-sm:hidden">
+    {polygons.map((p) => (
+      <polygon
+        points={p.points}
+        fill={p.fill}
+        fill-opacity={p.o}
+        transform={`translate(${p.x} ${p.y}) scale(${p.s})`}
+      />
+    ))}
+  </g>
+</svg>

@@ -1,0 +1,107 @@
+---
+import PageHero from '../PageHero.astro';
+import CtaBand from '../CtaBand.astro';
+import Icon from '../Icon.astro';
+import SectionHead from '../SectionHead.astro';
+import { pages } from '../../data/pages';
+import { caseStudies, talentCase } from '../../data/work';
+import { clientLogos } from '../../data/partners';
+import { getLang, localize, t } from '../../i18n/ui';
+
+const lang = getLang(Astro.url);
+const p = pages.work;
+---
+
+<PageHero
+  eyebrow={p.eyebrow}
+  title={p.title}
+  accent={p.accent}
+  lead={p.lead}
+  crumbs={[{ label: { en: 'Home', id: 'Beranda' }, href: '/' }, { label: p.eyebrow, href: '/work' }]}
+  seed={53}
+/>
+
+<section class="bg-white py-20 md:py-24">
+  <div class="shell grid gap-6 md:grid-cols-2">
+    {caseStudies.map((c, i) => (
+      <a
+        href={localize(`/work/${c.slug}`, lang)}
+        class="card group overflow-hidden"
+        data-reveal
+        data-reveal-delay={(i % 2) * 100}
+      >
+        <div class="flex h-18 items-center border-b border-paper-200 px-7">
+          <img src={c.logo} alt={c.client} class="max-h-8 w-auto object-contain" loading="lazy" decoding="async" />
+        </div>
+        <div class="aspect-16/10 overflow-hidden bg-paper-100">
+          <img
+            src={c.shot}
+            alt={t(c.title, lang)}
+            class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div class="p-7">
+          <p class="text-[0.65rem] font-bold uppercase tracking-widest text-magenta-500">{t(c.category, lang)}</p>
+          <h2 class="mt-2.5 text-[1.15rem] font-bold leading-snug text-ink-900">{t(c.title, lang)}</h2>
+          <p class="mt-3 text-[0.85rem] leading-relaxed text-ink-600">{t(c.summary, lang)}</p>
+          <div class="mt-5 flex flex-wrap gap-2">
+            {c.services.map((s) => (
+              <span class="rounded-full bg-paper-100 px-3 py-1 text-[0.68rem] font-semibold text-ink-600">{t(s, lang)}</span>
+            ))}
+          </div>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>
+
+<!-- Talent outsourcing feature -->
+<section class="bg-paper-100 py-20 md:py-24">
+  <div class="shell grid gap-10 rounded-2xl border border-paper-200 bg-white p-8 md:p-12 lg:grid-cols-2 lg:items-center">
+    <div data-reveal>
+      <img src={talentCase.logo} alt={talentCase.client} class="h-9 w-auto object-contain" loading="lazy" decoding="async" />
+      <p class="eyebrow mt-6">{t(talentCase.eyebrow, lang)}</p>
+      <h2 class="mt-3 text-[clamp(1.5rem,2.8vw,2.1rem)] text-ink-900">{t(talentCase.title, lang)}</h2>
+      <p class="mt-5 text-[0.9rem] leading-relaxed text-ink-600">{t(talentCase.body, lang)}</p>
+      <a href={localize('/services/it-outsourcing', lang)} class="link-arrow mt-7">
+        {lang === 'id' ? 'Pelajari IT Outsourcing' : 'Explore IT Outsourcing'}
+        <span class="arrow"><Icon name="arrow" size={14} /></span>
+      </a>
+    </div>
+    <img
+      src={talentCase.photo}
+      alt=""
+      class="w-full rounded-xl object-cover"
+      loading="lazy"
+      decoding="async"
+      data-reveal
+      data-reveal-delay="120"
+    />
+  </div>
+</section>
+
+<section class="bg-white py-20">
+  <div class="shell">
+    <SectionHead
+      eyebrow={{ en: 'CLIENTS', id: 'KLIEN' }}
+      title={{ en: 'Organisations that', id: 'Organisasi yang' }}
+      accent={{ en: 'trusted us with delivery', id: 'memercayakan pengerjaannya' }}
+      align="center"
+    />
+    <div class="mt-12 flex flex-wrap items-center justify-center gap-x-14 gap-y-8" data-reveal>
+      {clientLogos.map((logo) => (
+        <img
+          src={logo}
+          alt=""
+          class="h-9 w-auto object-contain opacity-70 grayscale transition duration-300 hover:opacity-100 hover:grayscale-0"
+          loading="lazy"
+          decoding="async"
+        />
+      ))}
+    </div>
+  </div>
+</section>
+
+<CtaBand />

@@ -1,0 +1,8 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Insights from '../components/pages/Insights.astro';
+import { pages } from '../data/pages';
+---
+<BaseLayout title={pages.insights.metaTitle} description={pages.insights.metaDescription} path="/insights">
+  <Insights />
+</BaseLayout>

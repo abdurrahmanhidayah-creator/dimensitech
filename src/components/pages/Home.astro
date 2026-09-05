@@ -1,0 +1,305 @@
+---
+import Starfield from '../Starfield.astro';
+import Icon from '../Icon.astro';
+import ValueStrip from '../ValueStrip.astro';
+import StatBand from '../StatBand.astro';
+import SectionHead from '../SectionHead.astro';
+import ServiceCard from '../ServiceCard.astro';
+import CtaBand from '../CtaBand.astro';
+import { pages, sections } from '../../data/pages';
+import { site, ui } from '../../data/site';
+import { services } from '../../data/services';
+import { industries } from '../../data/industries';
+import { caseStudies } from '../../data/work';
+import { partners, clientLogos } from '../../data/partners';
+import { insights, formatDate } from '../../data/insights';
+import { process } from '../../data/company';
+import { getLang, localize, t } from '../../i18n/ui';
+
+const lang = getLang(Astro.url);
+const home = pages.home;
+const featured = caseStudies.slice(0, 4);
+const latest = insights.slice(0, 3);
+---
+
+<!-- ── One-screen opening: hero, value strip, about and services ─────────── -->
+<div class="fold">
+  <section class="canvas-dark fold-grow relative overflow-hidden pt-[74px]">
+    <Starfield seed={5} count={110} />
+
+    <!-- The banner is composed with open starfield on the left, so it carries
+         the headline rather than sitting in a column beside it. -->
+    <div class="relative">
+      <img
+        src="/assets/hero-banner.jpg"
+        alt=""
+        width="2073"
+        height="758"
+        fetchpriority="high"
+        decoding="async"
+        class="hero-banner absolute inset-0 h-full w-full object-cover object-[58%_center] lg:object-[64%_center]"
+      />
+      <div
+        class="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,8,45,0.86),rgba(6,8,45,0.76)_45%,rgba(6,8,45,0.94))] lg:bg-[linear-gradient(96deg,rgba(6,8,45,0.94)_0%,rgba(6,8,45,0.76)_32%,rgba(6,8,45,0.24)_58%,rgba(6,8,45,0)_76%)]"
+      >
+      </div>
+
+      <div
+        class="shell fold-band-tight relative flex min-h-[21rem] items-center py-12 lg:min-h-[clamp(14rem,38vh,24rem)] lg:py-[clamp(0.7rem,1.8vh,2.25rem)] xl:pr-32"
+      >
+        <div class="max-w-xl">
+          <p class="eyebrow eyebrow-light" data-reveal>{t(home.eyebrow, lang)}</p>
+          <h1
+            class="mt-3 text-[clamp(2.9rem,6.4vw,4.9rem)] leading-[0.95] text-white lg:text-[clamp(2.1rem,min(5.4vw,6.2vh),4.4rem)]"
+            data-reveal
+            data-reveal-delay="70"
+          >
+            {t(home.title, lang)}<br /><span class="text-accent">{t(home.accent, lang)}</span>
+          </h1>
+          <p
+            class="mt-4 max-w-lg text-[0.93rem] leading-relaxed text-slate-200 lg:text-[clamp(0.75rem,1.42vh,0.9rem)]"
+            data-reveal
+            data-reveal-delay="140"
+          >
+            {t(home.lead, lang)}
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3" data-reveal data-reveal-delay="210">
+            <a href={localize('/services', lang)} class="btn btn-sm">
+              {t(ui.explore, lang)} <span class="arrow"><Icon name="arrow" size={15} /></span>
+            </a>
+            <a href={localize('/about', lang)} class="btn btn-ghost btn-sm">
+              {t(ui.discover, lang)} <span class="arrow"><Icon name="arrow" size={15} /></span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Motto rail, sitting clear of the figure on the right of the banner -->
+        <ul
+          class="absolute right-6 top-1/2 hidden -translate-y-1/2 space-y-3 text-right xl:block"
+          aria-hidden="true"
+        >
+          {site.motto.map((word) => (
+            <li class="text-[0.66rem] font-semibold tracking-[0.38em] text-slate-200">{word}</li>
+          ))}
+          <li class="ml-auto h-px w-10 bg-magenta-500"></li>
+        </ul>
+      </div>
+    </div>
+
+    <ValueStrip />
+
+    <!-- ── About ────────────────────────────────────────────────────────── -->
+    <div class="shell fold-band-tight relative grid gap-8 py-14 lg:grid-cols-[1.3fr_1fr] lg:items-center lg:py-[clamp(0.6rem,1.4vh,2.25rem)]">
+      <div data-reveal>
+        <p class="eyebrow eyebrow-light">{t(sections.aboutHome.eyebrow, lang)}</p>
+        <h2 class="mt-2 text-[clamp(1.6rem,2.9vw,2.3rem)] text-white lg:text-[clamp(1.15rem,2.4vh,2.1rem)]">
+          {t(sections.aboutHome.title, lang)}<br /><span class="text-accent">{t(sections.aboutHome.accent, lang)}</span>
+        </h2>
+        <p class="mt-2.5 max-w-lg text-[0.88rem] leading-relaxed text-slate-300 lg:max-w-none lg:text-[clamp(0.72rem,1.32vh,0.84rem)]">
+          {t(pages.about.lead, lang)}
+        </p>
+        <a href={localize('/about', lang)} class="btn btn-ghost btn-sm mt-3.5">
+          {t(ui.learnMore, lang)} <span class="arrow"><Icon name="arrow" size={15} /></span>
+        </a>
+      </div>
+      <StatBand class="lg:pl-8" />
+    </div>
+  </section>
+
+  <!-- ── Services ───────────────────────────────────────────────────────── -->
+  <section class="fold-band-tight bg-paper-100 py-14 md:py-16 lg:py-[clamp(0.6rem,1.3vh,2.25rem)]">
+    <div class="shell">
+      <div class="flex justify-end lg:-mb-1">
+        <a href={localize('/services', lang)} class="link-arrow" data-reveal>
+          {t(ui.viewAll, lang)} <span class="arrow"><Icon name="arrow" size={15} /></span>
+        </a>
+      </div>
+
+      <!-- Heading sits beside the row of capabilities, as in the reference layout. -->
+      <div class="mt-3 grid gap-8 lg:mt-2 lg:grid-cols-[13rem_1fr] lg:items-center lg:gap-6 xl:grid-cols-[16rem_1fr]">
+        <SectionHead
+          eyebrow={sections.servicesHome.eyebrow}
+          title={sections.servicesHome.title}
+          accent={sections.servicesHome.accent}
+          class="lg:[&>h2]:text-[1.4rem] xl:[&>h2]:text-[clamp(1.3rem,2.4vh,1.7rem)]"
+        />
+        <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-4 xl:grid-cols-8 xl:gap-2">
+          {services.map((s, i) => <ServiceCard service={s} index={i} compact />)}
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ── Industries ─────────────────────────────────────────────────────────── -->
+<section class="bg-white py-20 md:py-28">
+  <div class="shell">
+    <SectionHead
+      eyebrow={sections.industriesHome.eyebrow}
+      title={sections.industriesHome.title}
+      accent={sections.industriesHome.accent}
+      lead={pages.industries.lead}
+    />
+    <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {industries.map((ind, i) => (
+        <a
+          href={localize(`/industries#${ind.slug}`, lang)}
+          class="card group flex items-start gap-4 p-6"
+          data-reveal
+          data-reveal-delay={(i % 3) * 90}
+        >
+          <span class="icon-badge h-11 w-11 bg-violet-500/10 text-violet-500 transition-colors group-hover:bg-magenta-500/12 group-hover:text-magenta-500">
+            <Icon name={ind.icon} size={20} />
+          </span>
+          <span>
+            <span class="block text-[0.95rem] font-bold text-ink-900">{t(ind.name, lang)}</span>
+            <span class="mt-2 block text-[0.8rem] leading-relaxed text-ink-600">{t(ind.summary, lang)}</span>
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- ── Selected work ──────────────────────────────────────────────────────── -->
+<section class="bg-paper-100 py-20 md:py-28">
+  <div class="shell">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <SectionHead
+        eyebrow={sections.workHome.eyebrow}
+        title={sections.workHome.title}
+        accent={sections.workHome.accent}
+        class="max-w-md"
+      />
+      <a href={localize('/work', lang)} class="link-arrow shrink-0 md:mb-2" data-reveal>
+        {lang === 'id' ? 'Lihat semua portofolio' : 'View all work'} <span class="arrow"><Icon name="arrow" size={15} /></span>
+      </a>
+    </div>
+
+    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {featured.map((c, i) => (
+        <a
+          href={localize(`/work/${c.slug}`, lang)}
+          class="card group overflow-hidden"
+          data-reveal
+          data-reveal-delay={(i % 4) * 80}
+        >
+          <div class="flex h-16 items-center border-b border-paper-200 px-5">
+            <img src={c.logo} alt={c.client} class="max-h-7 w-auto object-contain" loading="lazy" decoding="async" />
+          </div>
+          <div class="aspect-4/3 overflow-hidden bg-paper-100">
+            <img
+              src={c.shot}
+              alt={t(c.title, lang)}
+              class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div class="p-5">
+            <p class="text-[0.65rem] font-bold uppercase tracking-widest text-magenta-500">{t(c.category, lang)}</p>
+            <h3 class="mt-2 text-[0.92rem] font-bold leading-snug text-ink-900">{t(c.title, lang)}</h3>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- ── Partners ───────────────────────────────────────────────────────────── -->
+<section class="canvas-dark relative overflow-hidden py-20 md:py-28">
+  <Starfield seed={23} count={70} />
+  <div class="shell relative">
+    <SectionHead
+      eyebrow={sections.partnersHome.eyebrow}
+      title={sections.partnersHome.title}
+      accent={sections.partnersHome.accent}
+      invert
+    />
+    <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {partners.map((p, i) => (
+        <div class="card-dark p-6" data-reveal data-reveal-delay={(i % 4) * 90}>
+          <div class="flex h-10 items-center">
+            <img src={p.logo} alt={p.name} class="max-h-8 w-auto object-contain" loading="lazy" decoding="async" />
+          </div>
+          <h3 class="mt-5 text-[0.95rem] font-bold text-white">{p.name}</h3>
+          <p class="mt-2 text-[0.8rem] leading-relaxed text-slate-400">{t(p.blurb, lang)}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-14 border-t border-white/10 pt-10" data-reveal>
+      <p class="text-center text-[0.68rem] font-bold uppercase tracking-[0.28em] text-slate-400">
+        {lang === 'id' ? 'Dipercaya oleh' : 'Trusted by'}
+      </p>
+      <div class="mt-7 flex flex-wrap items-center justify-center gap-x-12 gap-y-7">
+        {clientLogos.map((logo) => (
+          <img
+            src={logo}
+            alt=""
+            class="h-8 w-auto object-contain opacity-60 grayscale transition duration-300 hover:opacity-100 hover:grayscale-0"
+            loading="lazy"
+            decoding="async"
+          />
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Process ────────────────────────────────────────────────────────────── -->
+<section class="bg-white py-20 md:py-28">
+  <div class="shell">
+    <SectionHead
+      eyebrow={sections.processHome.eyebrow}
+      title={sections.processHome.title}
+      accent={sections.processHome.accent}
+    />
+    <ol class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {process.map((step, i) => (
+        <li class="relative pt-6" data-reveal data-reveal-delay={i * 100}>
+          <span class="absolute left-0 top-0 h-1 w-12 rounded-full bg-magenta-500"></span>
+          <p class="text-[0.7rem] font-bold tracking-[0.25em] text-ink-400">{step.step}</p>
+          <h3 class="mt-3 text-[1.1rem] font-bold text-ink-900">{t(step.title, lang)}</h3>
+          <p class="mt-2.5 text-[0.83rem] leading-relaxed text-ink-600">{t(step.body, lang)}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<!-- ── Insights ───────────────────────────────────────────────────────────── -->
+<section class="bg-paper-100 py-20 md:py-28">
+  <div class="shell">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <SectionHead
+        eyebrow={sections.insightsHome.eyebrow}
+        title={sections.insightsHome.title}
+        accent={sections.insightsHome.accent}
+        class="max-w-md"
+      />
+      <a href={localize('/insights', lang)} class="link-arrow shrink-0 md:mb-2" data-reveal>
+        {lang === 'id' ? 'Semua wawasan' : 'All insights'} <span class="arrow"><Icon name="arrow" size={15} /></span>
+      </a>
+    </div>
+    <div class="mt-12 grid gap-5 md:grid-cols-3">
+      {latest.map((post, i) => (
+        <a
+          href={localize(`/insights/${post.slug}`, lang)}
+          class="card flex flex-col p-6"
+          data-reveal
+          data-reveal-delay={i * 100}
+        >
+          <p class="text-[0.65rem] font-bold uppercase tracking-widest text-magenta-500">{t(post.category, lang)}</p>
+          <h3 class="mt-3 text-[1.02rem] font-bold leading-snug text-ink-900">{t(post.title, lang)}</h3>
+          <p class="mt-3 flex-1 text-[0.82rem] leading-relaxed text-ink-600">{t(post.excerpt, lang)}</p>
+          <p class="mt-5 text-[0.72rem] text-ink-400">
+            {formatDate(post.date, lang)} · {post.readingTime} {lang === 'id' ? 'menit baca' : 'min read'}
+          </p>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<CtaBand />

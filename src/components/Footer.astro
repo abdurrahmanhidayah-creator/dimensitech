@@ -1,0 +1,86 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import Starfield from './Starfield.astro';
+import { site, nav, footerNav, ui } from '../data/site';
+import { services } from '../data/services';
+import { getLang, localize, t } from '../i18n/ui';
+
+const lang = getLang(Astro.url);
+const year = new Date().getFullYear();
+const companyLinks = nav.filter((n) => ['/about', '/industries', '/work', '/insights', '/careers', '/contact'].includes(n.href));
+---
+
+<footer class="canvas-dark relative overflow-hidden pt-20 pb-10">
+  <Starfield seed={19} count={60} class="opacity-60" />
+
+  <div class="shell relative">
+    <div class="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+      <div>
+        <Logo />
+        <p class="mt-5 max-w-xs text-sm leading-relaxed text-slate-300">{t(site.tagline, lang)}</p>
+        <div class="mt-6 flex gap-2">
+          {site.motto.map((word) => (
+            <span class="rounded-full border border-white/15 px-3 py-1 text-[0.6rem] font-bold tracking-[0.2em] text-slate-300">
+              {word}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <nav aria-label={t(footerNav.company, lang)}>
+        <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-white">{t(footerNav.company, lang)}</h2>
+        <ul class="mt-5 space-y-3">
+          {companyLinks.map((item) => (
+            <li>
+              <a href={localize(item.href, lang)} class="text-sm text-slate-300 transition-colors hover:text-magenta-400">
+                {t(item.label, lang)}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <nav aria-label={t(footerNav.services, lang)}>
+        <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-white">{t(footerNav.services, lang)}</h2>
+        <ul class="mt-5 space-y-3">
+          {services.slice(0, 6).map((s) => (
+            <li>
+              <a href={localize(`/services/${s.slug}`, lang)} class="text-sm text-slate-300 transition-colors hover:text-magenta-400">
+                {t(s.title, lang)}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a href={localize('/services', lang)} class="link-arrow text-[0.75rem]">
+              {t(ui.viewAll, lang)} <span class="arrow"><Icon name="arrow" size={13} /></span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-white">{t(footerNav.contact, lang)}</h2>
+        <ul class="mt-5 space-y-4 text-sm text-slate-300">
+          <li class="flex gap-3">
+            <span class="mt-0.5 text-magenta-400"><Icon name="mail" size={16} /></span>
+            <a href={`mailto:${site.email}`} class="transition-colors hover:text-white">{site.email}</a>
+          </li>
+          <li class="flex gap-3">
+            <span class="mt-0.5 text-magenta-400"><Icon name="phone" size={16} /></span>
+            <a href={`tel:${site.phoneHref}`} class="transition-colors hover:text-white">{site.phone}</a>
+          </li>
+          <li class="flex gap-3">
+            <span class="mt-0.5 text-magenta-400"><Icon name="pin" size={16} /></span>
+            <span class="leading-relaxed">{t(site.address, lang)}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-14 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+      <p>© {year} {site.legalName}. {t(footerNav.rights, lang)}</p>
+      <p>{site.name} · Jakarta, Indonesia</p>
+    </div>
+  </div>
+</footer>

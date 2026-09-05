@@ -1,0 +1,79 @@
+---
+import PageHero from '../PageHero.astro';
+import CtaBand from '../CtaBand.astro';
+import Icon from '../Icon.astro';
+import SectionHead from '../SectionHead.astro';
+import { pages } from '../../data/pages';
+import { industries } from '../../data/industries';
+import { services } from '../../data/services';
+import { getLang, localize, t } from '../../i18n/ui';
+
+const lang = getLang(Astro.url);
+const p = pages.industries;
+---
+
+<PageHero
+  eyebrow={p.eyebrow}
+  title={p.title}
+  accent={p.accent}
+  lead={p.lead}
+  crumbs={[{ label: { en: 'Home', id: 'Beranda' }, href: '/' }, { label: p.eyebrow, href: '/industries' }]}
+  seed={41}
+/>
+
+<section class="bg-white py-20 md:py-24">
+  <div class="shell space-y-4">
+    {industries.map((ind, i) => (
+      <article
+        id={ind.slug}
+        class="card grid scroll-mt-28 gap-8 p-8 md:grid-cols-[auto_1.4fr_1fr] md:items-start"
+        data-reveal
+        data-reveal-delay={(i % 3) * 80}
+      >
+        <span class="icon-badge h-14 w-14 bg-violet-500/10 text-violet-500">
+          <Icon name={ind.icon} size={26} />
+        </span>
+        <div>
+          <h2 class="text-[1.25rem] font-bold text-ink-900">{t(ind.name, lang)}</h2>
+          <p class="mt-3 text-[0.88rem] leading-relaxed text-ink-600">{t(ind.summary, lang)}</p>
+        </div>
+        <div class="rounded-xl bg-paper-100 p-5">
+          <p class="text-[0.65rem] font-bold uppercase tracking-widest text-magenta-500">
+            {lang === 'id' ? 'Tantangan umum' : 'Common challenges'}
+          </p>
+          <ul class="mt-3 space-y-2">
+            {ind.challenges.map((c) => (
+              <li class="flex gap-2.5 text-[0.8rem] leading-relaxed text-ink-600">
+                <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-magenta-500"></span>
+                {t(c, lang)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<section class="bg-paper-100 py-20 md:py-24">
+  <div class="shell">
+    <SectionHead
+      eyebrow={{ en: 'CAPABILITIES', id: 'KAPABILITAS' }}
+      title={{ en: 'The same capabilities,', id: 'Kapabilitas yang sama,' }}
+      accent={{ en: 'applied to your sector', id: 'diterapkan di sektor Anda' }}
+    />
+    <div class="mt-10 flex flex-wrap gap-3">
+      {services.map((s) => (
+        <a
+          href={localize(`/services/${s.slug}`, lang)}
+          class="inline-flex items-center gap-2.5 rounded-full border border-paper-200 bg-white px-4 py-2.5 text-[0.82rem] font-semibold text-ink-900 transition-colors hover:border-magenta-500/40 hover:text-magenta-500"
+        >
+          <Icon name={s.icon} size={16} />
+          {t(s.title, lang)}
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<CtaBand />

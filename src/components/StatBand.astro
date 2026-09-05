@@ -1,0 +1,23 @@
+---
+import Icon from './Icon.astro';
+import { stats } from '../data/company';
+import { getLang, t } from '../i18n/ui';
+
+interface Props { class?: string }
+const { class: className = '' } = Astro.props;
+const lang = getLang(Astro.url);
+---
+
+<div class:list={['grid gap-8 sm:grid-cols-3 lg:gap-4 xl:gap-8', className]}>
+  {stats.map((s, i) => (
+    <div class="flex items-center gap-4 lg:gap-3 xl:gap-4" data-reveal data-reveal-delay={i * 100}>
+      <span class="icon-badge h-14 w-14 shrink-0 bg-white/8 text-magenta-400 ring-1 ring-inset ring-white/12 lg:h-11 lg:w-11 xl:h-14 xl:w-14">
+        <Icon name={s.icon} size={24} />
+      </span>
+      <div>
+        <p class="text-[1.9rem] font-extrabold leading-none tracking-tight text-white lg:text-[1.5rem] xl:text-[1.9rem]">{s.value}</p>
+        <p class="mt-1.5 text-[0.8rem] leading-snug text-slate-300 lg:text-[0.72rem] xl:text-[0.8rem]">{t(s.label, lang)}</p>
+      </div>
+    </div>
+  ))}
+</div>

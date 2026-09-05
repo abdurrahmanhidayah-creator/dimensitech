@@ -1,0 +1,83 @@
+---
+import PageHero from '../PageHero.astro';
+import CtaBand from '../CtaBand.astro';
+import SectionHead from '../SectionHead.astro';
+import Icon from '../Icon.astro';
+import { pages } from '../../data/pages';
+import { jobs, perks } from '../../data/careers';
+import { site } from '../../data/site';
+import { getLang, localize, t } from '../../i18n/ui';
+
+const lang = getLang(Astro.url);
+const p = pages.careers;
+---
+
+<PageHero
+  eyebrow={p.eyebrow}
+  title={p.title}
+  accent={p.accent}
+  lead={p.lead}
+  crumbs={[{ label: { en: 'Home', id: 'Beranda' }, href: '/' }, { label: p.eyebrow, href: '/careers' }]}
+  seed={71}
+/>
+
+<section class="bg-white py-20 md:py-24">
+  <div class="shell">
+    <SectionHead
+      eyebrow={{ en: 'WHY DIMENSI', id: 'MENGAPA DIMENSI' }}
+      title={{ en: 'What working here', id: 'Seperti apa rasanya' }}
+      accent={{ en: 'actually looks like', id: 'bekerja di sini' }}
+    />
+    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {perks.map((perk, i) => (
+        <div class="card p-6" data-reveal data-reveal-delay={i * 90}>
+          <span class="icon-badge h-12 w-12 bg-magenta-500/10 text-magenta-500">
+            <Icon name={perk.icon} size={22} />
+          </span>
+          <h3 class="mt-5 text-[1rem] font-bold text-ink-900">{t(perk.title, lang)}</h3>
+          <p class="mt-2.5 text-[0.82rem] leading-relaxed text-ink-600">{t(perk.body, lang)}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="bg-paper-100 py-20 md:py-24">
+  <div class="shell">
+    <SectionHead
+      eyebrow={{ en: 'OPEN ROLES', id: 'LOWONGAN TERBUKA' }}
+      title={{ en: `${jobs.length} positions`, id: `${jobs.length} posisi` }}
+      accent={{ en: 'open right now', id: 'yang sedang dibuka' }}
+    />
+    <ul class="mt-12 space-y-3">
+      {jobs.map((job, i) => (
+        <li data-reveal data-reveal-delay={(i % 4) * 70}>
+          <a
+            href={localize(`/careers/${job.slug}`, lang)}
+            class="card group flex flex-col gap-4 p-7 md:flex-row md:items-center md:justify-between"
+          >
+            <div>
+              <h3 class="text-[1.1rem] font-bold text-ink-900">{t(job.title, lang)}</h3>
+              <p class="mt-2 text-[0.84rem] leading-relaxed text-ink-600">{t(job.summary, lang)}</p>
+            </div>
+            <div class="flex shrink-0 flex-wrap items-center gap-2 md:justify-end">
+              <span class="rounded-full bg-paper-100 px-3 py-1 text-[0.7rem] font-semibold text-ink-600">{t(job.department, lang)}</span>
+              <span class="rounded-full bg-paper-100 px-3 py-1 text-[0.7rem] font-semibold text-ink-600">{t(job.location, lang)}</span>
+              <span class="rounded-full bg-magenta-500/10 px-3 py-1 text-[0.7rem] font-semibold text-magenta-500">{t(job.type, lang)}</span>
+              <span class="ml-1 text-magenta-500 transition-transform duration-300 group-hover:translate-x-1">
+                <Icon name="arrow" size={16} />
+              </span>
+            </div>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <p class="mt-10 text-center text-[0.85rem] text-ink-600" data-reveal>
+      {lang === 'id' ? 'Tidak menemukan posisi yang cocok? Kirim CV Anda ke ' : 'Nothing matching your profile? Send your CV to '}
+      <a href={`mailto:${site.email}`} class="font-semibold text-magenta-500 hover:underline">{site.email}</a>
+    </p>
+  </div>
+</section>
+
+<CtaBand />

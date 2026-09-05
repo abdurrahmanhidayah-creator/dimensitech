@@ -1,0 +1,33 @@
+---
+import Icon from './Icon.astro';
+import { valueStrip } from '../data/company';
+import { getLang, t } from '../i18n/ui';
+
+const lang = getLang(Astro.url);
+---
+
+<div class="shell relative">
+  <div class="grid divide-y divide-white/12 border-y border-white/12 sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4">
+    {valueStrip.map((item, i) => (
+      <div
+        class:list={[
+          'fold-strip-row flex items-start gap-4 px-2 py-6 lg:px-7 lg:py-[clamp(0.4rem,0.95vh,1.4rem)]',
+          i > 0 && 'lg:border-l lg:border-white/12',
+          i === 1 && 'sm:border-l sm:border-white/12 sm:border-t-0',
+          i === 3 && 'sm:border-l sm:border-white/12',
+          i >= 2 && 'sm:border-t sm:border-white/12 lg:border-t-0',
+        ]}
+        data-reveal
+        data-reveal-delay={i * 90}
+      >
+        <span class="icon-badge h-12 w-12 bg-magenta-500/12 text-magenta-400 ring-1 ring-inset ring-magenta-500/25">
+          <Icon name={item.icon} size={21} />
+        </span>
+        <div>
+          <h3 class="text-[0.9rem] font-bold leading-tight text-white">{t(item.title, lang)}</h3>
+          <p class="mt-1.5 text-[0.75rem] leading-relaxed text-slate-400">{t(item.body, lang)}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
